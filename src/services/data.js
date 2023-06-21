@@ -4,6 +4,7 @@ import { API_URL } from "../utils/config";
 import logger from "../utils/logger";
 
 const baseUrl = API_URL;
+const extension = "api/data"
 
 const dataService = {
   upload: async (data) => {
@@ -17,7 +18,6 @@ const dataService = {
       return res.data;
     } catch (err) {
       logger.error(extension, err);
-      throw err;
     }
   }
 };

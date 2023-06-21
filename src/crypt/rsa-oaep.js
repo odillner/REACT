@@ -1,12 +1,14 @@
-import {decode, encode, chunk, dechunk} from "../utils/data-helper";
+import {chunk, dechunk} from "../utils/data-helper";
 
-const RSAKeySize = 2048
+const keySize = 2048
+const chunkSize = 190
+const name = "RSA-OAEP"
 
-const generateKeyPair = async () => {
+const generateKey = async () => {
     const key = await window.crypto.subtle.generateKey(
         {
-            name: "RSA-OAEP",
-            modulusLength: RSAKeySize, 
+            name,
+            modulusLength: keySize, 
             publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
             hash: {name: "SHA-256"},
         },
@@ -17,70 +19,42 @@ const generateKeyPair = async () => {
     return key
 }
 
-const encrypt = async (data, key) => {
-    const res = await window.crypto.subtle.encrypt(
-        {
-            name: "RSA-OAEP",
-        },
-        key.publicKey, 
-        data 
-    )
+const encryptData = async (data, key) => {
+    const length = Math.ceil(data.length/chunkSize)
 
-    return res
-}
+    const res = Array(length);
 
-const decrypt = async (data, key) => {
-    const res = await window.crypto.subtle.decrypt(
-        {
-            name: "RSA-OAEP",
-        },
-        key.privateKey, 
-        data 
-    )
-
-    return res
-}
-
-
-const performRSAOAEPRun = async (data, n) => {
-    const encryptTimings = new Array(n);
-    const decryptTimings = new Array(n);
-
-    const key = await generateKeyPair();
-
-    const encodedData = encode(data)
-
-    let encryptedData, decryptedData, start, end;
-
-    for (let i = 0; i < n; i++) {
-        start = performance.now()
-
-        encryptedData = await Promise.all(encodedData.map(async (dataPoint) => {
-            const chunks = chunk(dataPoint, 100)
-    
-            return await Promise.all(chunks.map(chunk => encrypt(chunk, key)))
-        }))
-    
-        end = performance.now()
-
-        encryptTimings[i] = end - start;
-
-        start = performance.now()
-
-        decryptedData = await Promise.all(encryptedData.map(async (dataPoint) => {
-            const chunks = await Promise.all(dataPoint.map(chunk => decrypt(chunk, key)))
-    
-            return dechunk(chunks)
-        })) 
-    
-        end = performance.now()
-
-        decryptTimings[i] = end - start;
+    for (let i = 0; i < length; i++) {
+        res[i] = await window.crypto.subtle.encrypt(
+            {
+                name,
+            },
+            key.publicKey, 
+            data.slice(i * chunkSize, (i + 1) * chunkSize)
+        )
     }
 
-    const decodedData = decode(decryptedData)
-
-    return {decodedData, encryptTimings, decryptTimings}
+    return dechunk(res)
 }
 
-export default performRSAOAEPRun
+const decryptData = async (data, key) => {
+    const length = Math.ceil(data.length/256)
+
+    const res = Array(length)
+
+    for (let i = 0; i < length; i++) {
+        res[i] = await window.crypto.subtle.decrypt(
+            {
+                name,
+            },
+            key.privateKey,             
+            data.slice(i * 256, (i + 1) * 256)
+        )
+    }
+
+    return dechunk(res)
+}
+
+const RSAOAEP = {generateKey, encryptData, decryptData, name}
+
+export default RSAOAEP

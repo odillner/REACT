@@ -62,6 +62,14 @@ const dechunk = (chunks) => {
     return merged
 }
 
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const getAverage = (data) => {
+    return data.reduce((a, b) => a + b) / data.length
+}
+
 const getDataSet = (size) => {
     switch(size) {
         case 100:
@@ -75,4 +83,4 @@ const getDataSet = (size) => {
       } 
 }
 
-export {encode, decode, chunk, dechunk, toBuffer, getDataSet}
+export {encode, decode, chunk, dechunk, toBuffer, getAverage, getDataSet, sleep}

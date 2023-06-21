@@ -1,6 +1,7 @@
 const keySize = 256
-const IVSize = 12
-const name = "AES-GCM"
+const counterSize = 16
+const blockSize = 64
+const name = "AES-CTR"
 
 const generateKey = async () => {
     const key = await window.crypto.subtle.generateKey(
@@ -17,25 +18,27 @@ const generateKey = async () => {
 
 
 const encryptData = async (data, key) => {
-    const iv = window.crypto.getRandomValues(new Uint8Array(IVSize));
+    const counter = window.crypto.getRandomValues(new Uint8Array(counterSize));
 
     const encryptedData = await window.crypto.subtle.encrypt(
         {
             name,
-            iv
+            counter,
+            length: blockSize
         },
         key,
         data
     )
     
-    return {encryptedData, iv}
+    return {encryptedData, counter}
 }
 
-const decryptData = async ({encryptedData, iv}, key) => {
+const decryptData = async ({encryptedData, counter}, key) => {
     let result = await window.crypto.subtle.decrypt(
         {
             name,
-            iv
+            counter,
+            length: blockSize
         },
         key,
         encryptedData
@@ -44,6 +47,6 @@ const decryptData = async ({encryptedData, iv}, key) => {
     return result
 }
 
-const AESGCM = {generateKey, encryptData, decryptData, name}
+const AESCTR = {generateKey, encryptData, decryptData, name}
 
-export default AESGCM
+export default AESCTR

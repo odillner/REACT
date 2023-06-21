@@ -1,6 +1,6 @@
 const keySize = 256
-const IVSize = 12
-const name = "AES-GCM"
+const IVSize = 16
+const name = "AES-CBC"
 
 const generateKey = async () => {
     const key = await window.crypto.subtle.generateKey(
@@ -44,6 +44,6 @@ const decryptData = async ({encryptedData, iv}, key) => {
     return result
 }
 
-const AESGCM = {generateKey, encryptData, decryptData, name}
+const AESCBC = {generateKey, encryptData, decryptData, name}
 
-export default AESGCM
+export default AESCBC
