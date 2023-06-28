@@ -1,3 +1,5 @@
+/* central module to fetch various algorithm implementations */
+
 import AESGCM from "./aes-gcm"
 import BFCBC from "./blowfish-cbc"
 import ECIES from "./ecies-secp256k1"

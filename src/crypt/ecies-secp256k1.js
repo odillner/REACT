@@ -1,3 +1,5 @@
+/* non web crypto ecies */
+
 import {generateKeyPair, encrypt, decrypt} from 'eccrypto-js'
 
 const name = "ECIES-SECP256K1"

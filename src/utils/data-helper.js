@@ -1,8 +1,9 @@
-/* Module used for handling test data */
+/* Module used containing various helper functions */
 import dataSet100 from "../data/100.json"
 import dataSet1000 from "../data/1000.json"
 import dataSet10000 from "../data/10000.json"
 
+/* various encoding and decoding functions */
 const encode = (data) => {
     const encoder = new TextEncoder();
 
@@ -31,6 +32,7 @@ const fromBuffer = (data) => {
     return decodedData
 }
 
+/* chunking and dechunking for rsa */
 const chunk = (data, size) => {
     const chunks = []
 
@@ -62,6 +64,7 @@ const dechunk = (chunks) => {
     return merged
 }
 
+/* hacky way to sleep between operations */
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -1,3 +1,5 @@
+/* web crypto aes-gcm */
+
 const keySize = 256
 const IVSize = 12
 const name = "AES-GCM"

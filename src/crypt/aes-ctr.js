@@ -1,3 +1,5 @@
+/* web crypto aes-ctr */
+
 const keySize = 256
 const counterSize = 16
 const blockSize = 64

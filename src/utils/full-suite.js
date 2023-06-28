@@ -1,3 +1,5 @@
+/* actual benchmarking code, performs benchmarks with given configurations */
+
 import { getByName } from "../crypt"
 import dataService from "../services/data"
 import { encode, decode, getDataSet, toBuffer, getAverage, sleep} from "./data-helper"
@@ -5,10 +7,12 @@ import { encode, decode, getDataSet, toBuffer, getAverage, sleep} from "./data-h
 const run = async (algorithmName, dataSetSize, numberOfRuns, deviceBrand, deviceModel, deviceOS, setCurrentOperation, keyGeneration) => {
     console.log("Fetching dataset...")
 
+    // fetches given dataset and encodes it
     const dataSet = getDataSet(dataSetSize)
     const encodedData = encode(dataSet)
     const bufferData = toBuffer(dataSet)
 
+    // fetches algorithm and creates arrays to store results
     const algorithm = getByName(algorithmName)
 
     const encryptTimings = new Array(numberOfRuns)
@@ -24,8 +28,10 @@ const run = async (algorithmName, dataSetSize, numberOfRuns, deviceBrand, device
 
     let start, end
 
+    // gets key that will actually be used in encryption and decryptions
     const key = await algorithm.generateKey()
 
+    // key generation benchmarking
     console.log("Starting key generation")
     setCurrentOperation("KEY GENERATION")
 
@@ -52,8 +58,9 @@ const run = async (algorithmName, dataSetSize, numberOfRuns, deviceBrand, device
 
     setCurrentOperation("SLEEPING")
     await sleep(5000)
-    setCurrentOperation("ENCRYPTION")
 
+    // encryption benchmarking
+    setCurrentOperation("ENCRYPTION")
     console.log("Starting encryption")
 
     for (let i = 0; i < numberOfRuns; i++) {
@@ -73,8 +80,9 @@ const run = async (algorithmName, dataSetSize, numberOfRuns, deviceBrand, device
 
     setCurrentOperation("SLEEPING")
     await sleep(5000)
-    setCurrentOperation("DECRYPTION")
 
+    // decryption benchmarks
+    setCurrentOperation("DECRYPTION")
     console.log("Starting decryption")
 
     for (let i = 0; i < numberOfRuns; i++) {
@@ -91,6 +99,7 @@ const run = async (algorithmName, dataSetSize, numberOfRuns, deviceBrand, device
         setCurrentOperation("DECRYPTION" + i)
     }
 
+    // checks if results of operations are correct
     if (algorithm.name == "RSA-PSS" || algorithm.name == "ECDSA-P521") {
         if (decryptedData.every(dataPoint => dataPoint === true)) {
             console.log(`Encrypted and decrypted data matches original dataset`)
@@ -108,13 +117,14 @@ const run = async (algorithmName, dataSetSize, numberOfRuns, deviceBrand, device
     }
 
 
-    const avgKeyGenCPU = 0 //prompt("keygencpu")/100;
-    const avgEncryptCPU = 0 //prompt("encryptcpu")/100
-    const avgDecryptCPU = 0 //prompt("decryptcpu")/100
+    // supplemental metrics, these need to be measured from outside the program using chrome or firefox devtools
+    const avgKeyGenCPU = prompt("keygencpu")/100
+    const avgEncryptCPU = prompt("encryptcpu")/100
+    const avgDecryptCPU = prompt("decryptcpu")/100
 
-    const avgKeyGenMem = 0 //parseFloat(prompt("keygenmem"))
-    const avgEncryptMem = 0 //parseFloat(prompt("encryptmem"))
-    const avgDecryptMem = 0 //parseFloat(prompt("decryptmem"))
+    const avgKeyGenMem = parseFloat(prompt("keygenmem"))
+    const avgEncryptMem = parseFloat(prompt("encryptmem"))
+    const avgDecryptMem = parseFloat(prompt("decryptmem"))
 
     setCurrentOperation("UPLOADING")
 

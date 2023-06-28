@@ -1,3 +1,5 @@
+/* frontend for interracting with benchmarking module */
+
 import { useState } from "react";
 import runFullSuite from "./utils/full-suite";
 

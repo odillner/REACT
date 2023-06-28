@@ -1,3 +1,5 @@
+/* web crypto rsa-oaep, larger data needs to chunked and dechunked when operated upon */
+
 import {chunk, dechunk} from "../utils/data-helper";
 
 const keySize = 2048

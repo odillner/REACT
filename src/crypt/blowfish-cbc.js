@@ -1,3 +1,5 @@
+/* non-webcrypto bf-cbc, uses node polyfills */
+
 import crypto from "crypto-browserify"
 import Blowfish from 'egoroof-blowfish';
 

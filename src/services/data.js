@@ -1,3 +1,5 @@
+/* service used to upload data to central storage */
+
 import axios from "axios";
 
 import { API_URL } from "../utils/config";
