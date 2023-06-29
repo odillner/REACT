@@ -11,15 +11,15 @@ const extension = "api/data"
 const dataService = {
   upload: async (data) => {
     try {
-      logger.info(extension, "Uploading data", data);
+      console.log(extension, "Uploading data", data);
 
       const res = await axios.post(baseUrl, data);
 
-      logger.info(extension, "Data uploaded", res);
+      console.log(extension, "Data uploaded", res);
 
       return res.data;
     } catch (err) {
-      logger.error(extension, err);
+      console.log(extension, err);
     }
   }
 };
